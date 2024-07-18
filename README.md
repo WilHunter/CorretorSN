@@ -19,6 +19,10 @@ quasar dev
 ```bash
 quasar build
 ```
-
+### Build PWA (Progressive Web App)
+```bash
+quasar build -m pwa
+```
 ### Customize the configuration
 See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+
