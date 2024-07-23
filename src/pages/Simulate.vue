@@ -251,6 +251,8 @@
   
   .charts-container {
     width: 100%;
+    max-width: 600px;
+    margin: auto;
     background: transparent;
     border-radius: 8px;
     padding: 20px;
@@ -259,17 +261,44 @@
   .simuladoAcao {
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   
   .result-container {
     width: 100%;
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .simuladoPrint {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  @media (max-width: 600px) {
+    .register-page {
+      padding: 10px;
+      font-size: medium;
+    }
+  
+    .charts-container,
+    .result-container {
+      padding: 10px;
+    }
   }
   
   @media print {
     .simuladoPrint {
       display: block;
     }
-    .register-page, .charts-container, .simuladoAcao, .result-container, .q-dialog, .q-btn {
+    .register-page,
+    .charts-container,
+    .simuladoAcao,
+    .result-container,
+    .q-dialog,
+    .q-btn {
       display: none !important;
     }
   }
