@@ -1,22 +1,50 @@
 <template>
     <div class="register-page">
-      <div class="charts-container">
+      <h3>Gerador de Simulados</h3>
+      <br>
+      <span>Selecione a prova que deseja:</span>
+      <div class="charts-container text-center">
         <q-form>
-          <q-radio-group
-              v-model="vestibulares"
-              :options="options"
-              type="radio"
-              checked-icon="task_alt" 
-              unchecked-icon="panorama_fish_eye"
-              inline
+          <q-option-group
+            v-model="vestibulares"
+            :options="options"
+            type="radio"
+            class="q-mb-xl"
+            inline
           />
-          <q-btn @click="gerarSimulado" label="Gerar" color="primary" />
-          <q-btn @click="gerarSimuladoAleatorio" label="Gerar Aleatório" color="secondary" />
+          <q-btn
+            dense
+            class="q-mr-md q-mb-xl"
+            style="width: 6em;"
+            @click="gerarSimulado"
+            label="Gerar"
+            color="primary"
+          />
         </q-form>
       </div>
-      <div class="result-container">
-        <span>Simulado Gerado:</span>
-        <div v-if="loading">
+      <h5 v-if="simulado.length > 0">Simulado <b>{{ vestibulares }}</b>:</h5>
+      <div class="result-container q-mt-xl">
+        <div class="simuladoAcao">
+          <q-btn
+            dense
+            outline
+            class="q-mb-xl q-mr-md"
+            v-if="simulado.length > 0"
+            @click="corrigirSimulado"
+            label="Corrigir Simulado"
+            color="primary"
+          />
+          <q-btn
+            dense
+            outline
+            class="q-mb-xl"
+            v-if="simulado.length > 0"
+            @click="imprimirSimulado"
+            label="Imprimir Simulado"
+            color="secondary"
+          />
+        </div>
+        <div v-if="loading" class="text-center">
           <div v-if="showAlternativeSpinner">
             <div class="text-h4">Aguarde mais um pouco, está quase pronto</div>
             <q-spinner-bars class="q-mt-md" size="3em" color="indigo" />
@@ -27,30 +55,41 @@
           </div>
         </div>
         <div v-else-if="simulado.length > 0">
-          <q-card v-for="(questao, index) in simulado" :key="index" class="q-ma-md">
-            <q-card-section>
-              <div>{{ questao.numero }}. {{ questao.pergunta }}</div>
-              <div v-if="questao.alternativas">
-                <q-radio-group v-model="respostas[index]">
-                  <q-radio v-for="(alternativa, idx) in questao.alternativas" :key="idx" :val="alternativa" :label="alternativa" />
-                </q-radio-group>
-              </div>
-              <div v-else>
-                <q-input filled v-model="respostasDissertativas[index]" type="textarea" rows="5" />
-              </div>
-            </q-card-section>
-          </q-card>
+          <div class="simuladoPrint">
+            <q-card
+              v-for="(questao, index) in simulado"
+              :key="index"
+              class="q-ma-md"
+              style="background-color: transparent;"
+            >
+              <q-card-section>
+                <div><b>{{ questao.numero }}. ({{ questao.ano }})</b> {{ questao.pergunta }}</div>
+                <div class="alternativas" v-if="questao.alternativas">
+                  <q-option-group
+                    v-model="respostas[index]"
+                    :options="questao.alternativas.map(alt => ({ label: alt, value: alt }))"
+                    type="radio"
+                    :color="getOptionColor(index, alt)"
+                  />
+                </div>
+                <div v-else>
+                  <q-input filled v-model="respostasDissertativas[index]" type="textarea" rows="5" />
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
         </div>
       </div>
-      <q-btn v-if="simulado.length > 0" @click="corrigirSimulado" label="Corrigir Simulado" color="primary" />
-      <q-btn v-if="simulado.length > 0" @click="imprimirSimulado" label="Imprimir Simulado" color="secondary" />
       <q-dialog v-model="mostrarGabarito">
-        <q-card>
+        <q-card class="gabaritoPrint" style="background-color: #0E2741;color: #0086f3;">
+          <q-card-section class="text-center">
+            <h5>Gabarito</h5>
+            <div v-if="acertos !== null">Você acertou {{ acertos }} de {{ simulado.length }} questões (Nota: {{ ((acertos / simulado.length) * 10).toFixed(1) }})</div>
+          </q-card-section>
           <q-card-section>
             <div v-for="(questao, index) in simulado" :key="index">
-              <div>{{ questao.numero }}. {{ questao.pergunta }}</div>
-              <div>Resposta correta: {{ questao.resposta }}</div>
-              <div>Comentário: {{ questao.comentario }}</div>
+              <div class="q-mt-md"><b>{{ questao.numero }}.</b> {{ questao.pergunta }}</div>
+              <div>Resposta correta: <b>{{ questao.resposta }}</b></div>
             </div>
           </q-card-section>
           <q-card-actions align="right">
@@ -76,6 +115,7 @@
       const mostrarGabarito = ref(false);
       const loading = ref(false);
       const showAlternativeSpinner = ref(false);
+      const acertos = ref(null);
   
       const options = [
         { label: 'ENEM', value: 'ENEM' },
@@ -83,45 +123,88 @@
         { label: 'AFA', value: 'AFA' },
         { label: 'IME', value: 'IME' },
         { label: 'Fuvest', value: 'Fuvest' },
-        { label: 'Unicamp', value: 'Unicamp' },
-        { label: 'UFPR', value: 'UFPR' },
-        { label: 'UFRGS', value: 'UFRGS' }
+        { label: 'Unicamp', value: 'Unicamp' }
       ];
+  
+      const questoesPorVestibular = {
+        'ENEM': 180,
+        'ITA': 70,
+        'AFA': 64,
+        'IME': 80,
+        'Fuvest': 90,
+        'Unicamp': 72
+      };
   
       const gerarSimulado = async () => {
         loading.value = true;
         showAlternativeSpinner.value = false;
         setTimeout(() => {
           showAlternativeSpinner.value = true;
-        }, 5000);
-        vestStore.vestibulares = vestibulares.value;  // Ajuste para refletir a seleção única
-        await vestStore.gerarSimulado();
-        simulado.value = vestStore.simulado;
-        loading.value = false;
-      };
+        }, 60000);
   
-      const gerarSimuladoAleatorio = async () => {
-        loading.value = true;
-        showAlternativeSpinner.value = false;
-        setTimeout(() => {
-          showAlternativeSpinner.value = true;
-        }, 5000);
-        await vestStore.gerarSimuladoAleatorio();
-        vestibulares.value = vestStore.vestibulares;  // Atualiza a seleção com o valor aleatório
+        const quantidadeQuestoes = questoesPorVestibular[vestibulares.value];
+  
+        await vestStore.gerarSimulado(vestibulares.value, quantidadeQuestoes);
         simulado.value = vestStore.simulado;
+        respostas.value = Array(quantidadeQuestoes).fill(null); // Inicializa o array de respostas
         loading.value = false;
       };
   
       const corrigirSimulado = () => {
+        let totalAcertos = 0;
+  
+        simulado.value.forEach((questao, index) => {
+          if (respostas.value[index] === questao.resposta) {
+            totalAcertos++;
+          }
+        });
+  
+        acertos.value = totalAcertos;
         mostrarGabarito.value = true;
       };
   
+      const getOptionColor = (index, alt) => {
+        if (mostrarGabarito.value) {
+          if (respostas.value[index] === alt) {
+            return alt === simulado.value[index].resposta ? 'cyan' : 'red';
+          }
+          return alt === simulado.value[index].resposta ? 'cyan' : null;
+        }
+        return null;
+      };
+  
       const imprimirSimulado = () => {
-        window.print();
+        const printContent = document.querySelector('.simuladoPrint').innerHTML;
+        const printWindow = window.open('', '', 'width=800,height=600');
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Imprimir Simulado</title>
+            </head>
+            <body>
+              ${printContent}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
       };
   
       const imprimirGabarito = () => {
-        // Lógica para imprimir o gabarito
+        const printContent = document.querySelector('.gabaritoPrint').innerHTML;
+        const printWindow = window.open('', '', 'width=800,height=600');
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Imprimir Gabarito</title>
+            </head>
+            <body>
+              ${printContent}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
       };
   
       onMounted(() => {
@@ -139,10 +222,11 @@
         showAlternativeSpinner,
         options,
         gerarSimulado,
-        gerarSimuladoAleatorio,
         corrigirSimulado,
         imprimirSimulado,
-        imprimirGabarito
+        imprimirGabarito,
+        acertos,
+        getOptionColor
       };
     }
   };
@@ -172,12 +256,22 @@
     padding: 20px;
   }
   
+  .simuladoAcao {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
   .result-container {
     width: 100%;
-    background: transparent;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    padding: 20px;
+  }
+  
+  @media print {
+    .simuladoPrint {
+      display: block;
+    }
+    .register-page, .charts-container, .simuladoAcao, .result-container, .q-dialog, .q-btn {
+      display: none !important;
+    }
   }
   </style>
   

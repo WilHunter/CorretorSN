@@ -7,12 +7,10 @@ const routes = [
       { path: 'customization', component: () => import('pages/CustomizationPage.vue') },
       { path: 'avaliacao', component: () => import('pages/IndexPage.vue') },
       { path: 'redacao/:id', component: () => import('pages/RedacaoDetailPage.vue') },
-      { path: 'simulados/:id', component: () => import('pages/Simulate.vue') }
+      { path: 'simulados', component: () => import('pages/Simulate.vue') }
     ]
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue')

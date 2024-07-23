@@ -8,7 +8,6 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 
@@ -60,11 +59,10 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-       env: {
+      env: {
         API_KEY: '89180c87ecdf4d6aaa7d23a3fd099b16',
         API_URL: 'https://ath-gpt4-o-dev.openai.azure.com/openai/deployments/gpt-4o-std-240513/chat/completions?api-version=2024-02-15-preview'
-
-       },
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -97,7 +95,6 @@ module.exports = configure(function (/* ctx */) {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
-      all: true,
       config: {},
 
       // iconSet: 'material-icons', // Quasar icon set
@@ -107,8 +104,8 @@ module.exports = configure(function (/* ctx */) {
       // (like functional components as one of the examples),
       // you can manually specify Quasar components/directives to be available everywhere:
       //
-      // components: [],
-      // directives: [],
+      components: [], // Deixe vazio se você estiver importando todos os componentes
+      directives: [], // Deixe vazio se você estiver importando todas as diretivas
 
       // Quasar plugins
       plugins: [

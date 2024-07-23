@@ -32,8 +32,9 @@
         </q-input>
       </div>
       <div class="col-12 col-md-4 q-pa-sm row no-wrap items-center">
-        <q-btn label="Limpar" @click="clearFilters" class="col-6 col-md-4" />
-        <q-btn label="+ Redação" to="/avaliacao" class="col-6 col-md-4 q-ml-md" />
+        <q-btn label="Limpar" @click="clearFilters" class="col-4 col-md-4" />
+        <q-btn label="+ Redação" to="/avaliacao" class="col-4 col-md-4 q-ml-md" />
+        <q-btn label="+ Simulados" to="/simulados" class="col-4 col-md-4 q-ml-md" />
       </div>
     </div>
     <div class="result-container q-mt-xl">
