@@ -1,37 +1,55 @@
+// vestStore.js
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 
 const API_KEY = process.env.API_KEY;
 const API_URL = process.env.API_URL;
 
+export const useVestStore = defineStore('vestStore', () => {
+  const vestibulares = ref(null);
+  const simulado = ref([]);
+  const error = ref(false);
+  const errorMessage = ref('');
 
-const checkPlagiarismAndAI = async () => {
+  const gerarSimulado = async () => {
     try {
-      const response = await axios.post(API_URL, {
-        messages: [
-          {
-            role: 'user',
-            content: `Verifique se a redação abaixo contém plágio ou foi gerado por IA, se houver plágio ou foi gerado por IA, inicie a resposta com o texto (conteúdo plagiado):\nTema: ${tema.value}\nTexto: ${texto.value}`
+      const response = await axios.post(
+        API_URL,
+        {
+          messages: [
+            {
+              role: 'user',
+              content: `Gerar simulado para o vestibular: ${vestibulares.value}`
+            }
+          ]
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'api-key': API_KEY
           }
-        ]
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': API_KEY
         }
-      });
+      );
 
-      const responseContent = response.data.choices[0].message.content.toLowerCase();
-      plagiado.value = responseContent.includes("conteúdo plagiado");
-      console.log(responseContent);
+      simulado.value = response.data.choices[0].message.content.split('\n').map((q, index) => {
+        const [numero, ...pergunta] = q.split('.');
+        return {
+          numero: index + 1,
+          pergunta: pergunta.join('.').trim()
+        };
+      });
     } catch (err) {
       errorMessage.value = `Código: ${err.response?.status || ''}\nMensagem: ${err.response?.statusText || err.message}`;
       error.value = true;
     }
   };
 
-
-  return{
-    
-  }
+  return {
+    vestibulares,
+    simulado,
+    error,
+    errorMessage,
+    gerarSimulado
+  };
+});

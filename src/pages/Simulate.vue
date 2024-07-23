@@ -69,7 +69,7 @@
   export default {
     setup() {
       const vestStore = useVestStore();
-      const vestibulares = ref(null);  // Mudança para aceitar apenas um valor
+      const vestibulares = ref(null);
       const simulado = ref([]);
       const respostas = ref([]);
       const respostasDissertativas = ref([]);
