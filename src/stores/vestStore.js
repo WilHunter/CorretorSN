@@ -43,7 +43,7 @@ export const useVestStore = defineStore('vestStore', () => {
         }
       });
 
-      console.log("Response Data:", response.data);
+      //console.log("Response Data:", response.data);
 
       // Verifique se a resposta é um JSON válido
       let parsedResponse;
