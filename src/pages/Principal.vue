@@ -14,6 +14,36 @@
           <Bar :data="mediaNotasData" :options="mediaNotasChartOptions" />
         </div>
       </div>
+      <div class="row q-gutter-sm">
+        <div class="col-12 col-md-6 text-center">
+          <h5>Ranking de Notas</h5>
+          <div class="result-container q-mt-xl">
+            <q-list class="text-left">
+              <q-item v-for="redacao in top5Redacoes" :key="redacao.id" clickable @click="goToDetail(redacao.id)">
+                <q-item-section>
+                  <q-item-label>
+                    <div class="row">
+                      <div class="col-12 col-md-2">
+                        <span class="text-caption">Nota</span> <br>
+                        {{ redacao.notaFinal }}
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <span class="text-caption">Título</span> <br>
+                        {{ redacao.tema }}
+                      </div>
+                      <div class="col-12 col-md-4">
+                        <span class="text-caption">Tipo de Avaliação</span> <br>
+                        {{ redacao.avaliacaoTipo }}
+                      </div>
+                    </div>
+                  </q-item-label>
+                </q-item-section>
+                <q-separator spaced inset color="grey-5"/>
+              </q-item>
+            </q-list>
+          </div>
+        </div>
+      </div>
     </div>
     <h2 class="text-center q-pb-xl">Lista de Redações</h2>
     <div class="row q-ma-md" style="width: 100%;">
@@ -39,7 +69,7 @@
     </div>
     <div class="result-container q-mt-xl">
       <q-list bordered class="text-left">
-        <q-item v-for="redacao in filteredRedacoes" :key="redacao.id" clickable @click="goToDetail(redacao.id)">
+        <q-item v-for="redacao in sortedRedacoes" :key="redacao.id" clickable @click="goToDetail(redacao.id)">
           <q-item-section>
             <q-item-label>
               <div class="row">
@@ -106,6 +136,14 @@ const filteredRedacoes = computed(() => {
   return redacoes.filter(redacao =>
     redacao.tema.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
+});
+
+const sortedRedacoes = computed(() => {
+  return filteredRedacoes.value.slice().sort((a, b) => b.notaFinal - a.notaFinal);
+});
+
+const top5Redacoes = computed(() => {
+  return sortedRedacoes.value.slice(0, 5);
 });
 
 const goToDetail = (id) => {
@@ -247,7 +285,6 @@ const mediaNotasChartOptions = {
   }
 };
 </script>
-
 
 <style scoped>
 span {

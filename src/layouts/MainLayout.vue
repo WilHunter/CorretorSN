@@ -5,6 +5,9 @@
         <q-toolbar-title>
           <img src="../assets/logoSN.png" alt="Logo" height="60">
         </q-toolbar-title>
+        <q-btn-dropdown class="q-mr-md" flat round dense dropdown-icon="notifications" >
+          // implementar notificações
+        </q-btn-dropdown>
         <q-btn flat round dense icon="menu" @click="toggleLeftDrawer"></q-btn>
       </q-toolbar>
     </q-header>
@@ -12,7 +15,7 @@
     <q-drawer style="font-size: medium;background: linear-gradient(235deg, #081828, #0d2741, #0d2741,#081828);color: #0086f3;" show-if-above v-model="leftDrawerOpen" side="left" >
       <div class="q-ma-md">
         <q-avatar><img src="../assets/Comp.png" alt=""></q-avatar>
-        Olá, <b>Fulano de Tal</b>
+        Olá, <b>Fulana de Tal</b>
       </div>
       <q-list>
         <q-item to="/">
@@ -20,6 +23,24 @@
             <q-icon name="home"></q-icon>
           </q-item-section>
           <q-item-section>Home</q-item-section>
+        </q-item>
+        <q-item to="/provas">
+          <q-item-section avatar>
+            <q-icon name="receipt_long"></q-icon>
+          </q-item-section>
+          <q-item-section>Prova</q-item-section>
+        </q-item>
+        <q-item to="/avaliacao">
+          <q-item-section avatar>
+            <q-icon name="library_books"></q-icon>
+          </q-item-section>
+          <q-item-section>Redação</q-item-section>
+        </q-item>
+        <q-item to="/simulados">
+          <q-item-section avatar>
+            <q-icon name="inventory"></q-icon>
+          </q-item-section>
+          <q-item-section>Simulado</q-item-section>
         </q-item>
         <!--
         <q-item to="/customization">

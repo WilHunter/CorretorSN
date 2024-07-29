@@ -18,19 +18,24 @@ export const useProvaStore = defineStore('provaStore', {
             {
               role: 'user',
               content: `Gere uma prova para alunos da ${serie}, da disciplina ${materia} com ${quantidadeQuestoes} questões alternativas de nível ${nivel}. A resposta deve conter somente o JSON com a seguinte estrutura:
-              prova:{
-                número da questão;
-                código BNCC: [];
-                pergunta;
-                alternativas: [];
-                resposta correta;
-                comentário da resposta correta;
-              };
+              {
+                "prova": [
+                  {
+                    "número da questão": número,
+                    "código BNCC": ["código"],
+                    "pergunta": "pergunta",
+                    "alternativas": ["A) alternativa", "B) alternativa", "C) alternativa", "D) alternativa"],
+                    "resposta correta": "letra",
+                    "comentário da resposta correta": "comentário"
+                  }
+                ]
+              }
               *importante, gere o total de questões solicitadas, sem interrupção e retorne somente o json, sem mais comentários`
             }
           ],
           max_tokens: 4000 // Aumentar o número de tokens permitidos na resposta
         };
+
         const response = await axios.post(API_URL, payload, {
           headers: {
             'Content-Type': 'application/json',
@@ -40,7 +45,9 @@ export const useProvaStore = defineStore('provaStore', {
         console.log(response);
         let parsedResponse;
         try {
-          parsedResponse = JSON.parse(response.data.choices[0].message.content);
+          const content = response.data.choices[0].message.content;
+          const jsonString = content.replace(/```json/g, '').replace(/```/g, '').trim();
+          parsedResponse = JSON.parse(jsonString);
         } catch (e) {
           throw new Error("A resposta da API não é um JSON válido: " + response.data.choices[0].message.content);
         }
