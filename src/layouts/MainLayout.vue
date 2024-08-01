@@ -42,6 +42,12 @@
           </q-item-section>
           <q-item-section>Simulado</q-item-section>
         </q-item>
+        <q-item to="/sugestao">
+          <q-item-section avatar>
+            <q-icon name="inventory"></q-icon>
+          </q-item-section>
+          <q-item-section>Sugestão de Aulas</q-item-section>
+        </q-item>
         <!--
         <q-item to="/customization">
           <q-item-section avatar>
