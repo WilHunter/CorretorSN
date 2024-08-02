@@ -43,6 +43,13 @@
           :rules="[val => !!val || 'Preenchimento obrigatório']"
           required
         />
+        <q-btn
+          label="Gerar Tema"
+          color="secondary"
+          outline
+          class="q-mt-md full-width"
+          @click="gerarTema"
+        />
         <q-input
           dark
           v-model="store.texto"
@@ -179,7 +186,9 @@ const generoTextualOptions = [
 const handleFileUpload = (event) => {
   store.handleFileUpload(event);
 };
-
+const gerarTema = () => {
+  store.gerarTema();
+};
 const submitRedacao = () => {
   store.submitRedacao();
 };

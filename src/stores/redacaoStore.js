@@ -98,7 +98,28 @@ export const useRedacaoStore = defineStore('redacaoStore', () => {
       error.value = true;
     }
   };
+  const gerarTema = async () => {
+    try {
+      const response = await axios.post(API_URL, {
+        messages: [
+          {
+            role: 'user',
+            content: 'Gere um tema para uma redação de vestibular e retorne somente o tema, sem comentários'
+          }
+        ]
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': API_KEY
+        }
+      });
 
+      tema.value = response.data.choices[0].message.content;
+    } catch (err) {
+      errorMessage.value = `Código: ${err.response?.status || ''}\nMensagem: ${err.response?.statusText || err.message}`;
+      error.value = true;
+    }
+  };
   const evaluateRedacao = async () => {
     const requestData = {
       messages: [
@@ -201,6 +222,7 @@ export const useRedacaoStore = defineStore('redacaoStore', () => {
     submitRedacao,
     salvarResultados,
     refazer,
-    loadSavedResults
+    loadSavedResults,
+    gerarTema
   };
 });
