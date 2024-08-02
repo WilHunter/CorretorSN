@@ -11,6 +11,7 @@
       outlined
       dark
       dense
+      style="min-width: 15em;"
       @update:model-value="onSerieChange"
     />
     <span v-if="materiasOptions.length > 0">Selecione a matéria:</span>
@@ -22,6 +23,7 @@
       outlined
       dark
       dense
+      style="min-width: 19em;"
       v-if="materiasOptions.length > 0"
     />
     <span>Tipo de aula:</span>
@@ -35,15 +37,26 @@
       outlined
       dark
       dense
+      style="min-width: 19em;"
     />
-    <q-btn
-      dense
-      class="q-mb-xl"
-      style="width: 6em;"
-      @click="gerarSugestao"
-      label="Gerar"
-      color="primary"
-    />
+    <div class="button-container">
+      <q-btn
+        dense
+        class="q-mb-xl"
+        style="width: 6em;"
+        @click="gerarSugestao"
+        label="Gerar"
+        color="primary"
+      />
+      <q-btn
+        dense
+        class="q-mb-xl"
+        style="width: 6em;"
+        @click="resetForm"
+        label="Refazer"
+        color="secondary"
+      />
+    </div>
 
     <div v-if="loading" class="text-center">
       <div v-if="showAlternativeSpinner">
@@ -57,7 +70,7 @@
     </div>
 
     <div v-if="!loading && tituloAula" class="sugestao-result">
-      <h4>Sugestão de Aula</h4>
+      <h3>Sugestão de Aula</h3>
       <p><b>Título da Aula:</b> {{ tituloAula }}</p>
       <div class="q-mb-md">
         <span><b>Habilidades BNCC:</b></span>
@@ -203,6 +216,26 @@ const gerarSugestao = async () => {
   showAlternativeSpinner.value = false;
 };
 
+const resetForm = () => {
+  serie.value = null;
+  materia.value = null;
+  tipoAulaExterna.value = false;
+  tipoAulaInterna.value = false;
+  tema.value = '';
+  tituloAula.value = '';
+  habilidadesBNCC.value = [];
+  objetivo.value = [];
+  conteudo.value = [];
+  metodologia.value = [];
+  recursos.value = [];
+  avaliacao.value = [];
+  planoAula.value = {
+    inicioAula: [],
+    desenvolvimento: [],
+    encerramento: []
+  };
+};
+
 const tituloAula = ref('');
 const habilidadesBNCC = ref([]);
 const objetivo = ref([]);
@@ -252,7 +285,7 @@ span {
 
 .sugestao-result {
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
   margin: auto;
   background: transparent;
   border-radius: 8px;
@@ -265,6 +298,11 @@ span {
 
 .q-mb-xl {
   margin-bottom: 2em;
+}
+
+.button-container {
+  display: flex;
+  gap: 1em;
 }
 
 @media (max-width: 600px) {
