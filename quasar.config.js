@@ -60,7 +60,7 @@ module.exports = configure(function (/* ctx */) {
       // publicPath: '/',
       // analyze: true,
       env: {
-        API_KEY: '89180c87ecdf4d6aaa7d23a3fd099b16',
+        API_KEY: 'f5fbe052134d4accaff7026a7ef7267f',
         API_URL: 'https://ath-gpt4-o-dev.openai.azure.com/openai/deployments/gpt-4o-std-240513/chat/completions?api-version=2024-02-15-preview'
       },
       // rawDefine: {}
