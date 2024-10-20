@@ -88,7 +88,11 @@
     <div v-if="store.avaliacaoFeita" class="result-container q-mt-xl">
       <h2 class="text-center">Resultado da Avaliação</h2>
       <div v-if="!store.plagiado">
-        <div class="text-center"><span> Sua redação foi avaliada de acordo com as regras <b>{{ store.avaliacaoTipo }}</b> e no gênero <b>{{ store.generoTextual }}</b>. </span></div>
+        <div class="text-center">
+          <span>
+            Sua redação foi avaliada de acordo com as regras <b>{{ store.avaliacaoTipo }}</b> e no gênero <b>{{ store.generoTextual }}</b>.
+          </span>
+        </div>
         <div class="card-results q-ma-xl">
           <q-card
             v-if="store.resultado && store.resultado.competencias"
@@ -112,8 +116,15 @@
           <div style="width: 80%;">
             <h3 v-if="store.resultado">Nota Final: {{ store.resultado.notaFinal }}</h3>
             <q-separator dark inset />
-            <div v-if="store.resultado" class="text-center q-pa-md" style="color: #9dd0fae5;"><span>{{ store.resultado.comentarioFinal }}</span></div>
+            <div v-if="store.resultado" class="text-center q-pa-md" style="color: #9dd0fae5;">
+              <span>{{ store.resultado.comentarioFinal }}</span>
+            </div>
           </div>
+        </div>
+        <!-- Exibe o texto corrigido com erros destacados -->
+        <div v-if="store.resultado && store.resultado.textoCorrigidoHtml" class="q-mt-xl text-center">
+          <h3 class="text-center">Sua Redação</h3>
+          <div v-html="store.resultado.textoCorrigidoHtml" class="corrected-text"></div>
           <q-btn
             label="salvar"
             color="primary"
@@ -132,7 +143,9 @@
             />
           </div>
           <div class="q-mb-xl">
-            Identificamos que o texto que você entregou tem sinais de plágio <br> Aproveite o tempo de estudo para criar um conteúdo original <br> Com foco e determinação, você certamente alcançará bons resultados!
+            Identificamos que o texto que você entregou tem sinais de plágio <br>
+            Aproveite o tempo de estudo para criar um conteúdo original <br>
+            Com foco e determinação, você certamente alcançará bons resultados!
           </div>
         </div>
       </div>
@@ -248,6 +261,7 @@ const isFormValid = computed(() => {
   justify-items: center;
   justify-content: center;
 }
+
 .final-score {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -256,6 +270,15 @@ const isFormValid = computed(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.corrected-text {
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 8px;
+  border-style: dashed;
+  border-color: #0086f3;
+  color: #0086f3;
 }
 
 .file-upload-container {

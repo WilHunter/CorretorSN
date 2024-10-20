@@ -9,7 +9,9 @@ const routes = [
       { path: 'redacao/:id', component: () => import('pages/RedacaoDetailPage.vue') },
       { path: 'simulados', component: () => import('pages/Simulate.vue') },
       { path: 'provas', component: () => import('pages/GeradorProva.vue') },
-      { path: 'sugestao', component: () => import('pages/SugestPage.vue') }
+      { path: 'sugestao', component: () => import('pages/SugestPage.vue') },
+      { path: 'emocional', component: () => import('pages/SocioEmocional.vue') },
+      { path: 'conteudo', component: () => import('pages/GeradorConteudo.vue') }
     ]
   },
 

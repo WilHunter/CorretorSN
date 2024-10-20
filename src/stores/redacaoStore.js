@@ -98,6 +98,7 @@ export const useRedacaoStore = defineStore('redacaoStore', () => {
       error.value = true;
     }
   };
+
   const gerarTema = async () => {
     try {
       const response = await axios.post(API_URL, {
@@ -120,16 +121,34 @@ export const useRedacaoStore = defineStore('redacaoStore', () => {
       error.value = true;
     }
   };
+
   const evaluateRedacao = async () => {
     const requestData = {
       messages: [
         {
           role: 'user',
-          content: `Considerando os critérios de avaliação de redações adotados pelo ${avaliacaoTipo.value}, qual nota seria atribuída para a redação abaixo?\nComente cada um dos itens avaliados e qual a nota para cada item.\nTema: ${tema.value}\nTexto: ${texto.value}\nResponda com um JSON válido com a seguintes campos resultado: competencias: [{nomeCompetencia:"",comentCompetencia:"",notaCompetencia:""}], notaFinal:"", comentarioFinal:""`
+          content: `Considerando os critérios de avaliação de redações adotados pelo ${avaliacaoTipo.value}, qual nota seria atribuída para a redação abaixo?
+Comente cada um dos itens avaliados e qual a nota para cada item.
+Identifique erros de gramática ou semântica e forneça uma versão do texto em HTML com markdown, destacando em cores diferentes onde houver erros de gramática ou semântica.
+Tema: ${tema.value}
+Texto: ${texto.value}
+Responda com um JSON válido com os seguintes campos:
+resultado: {
+  competencias: [
+    {
+      nomeCompetencia: "",
+      comentCompetencia: "",
+      notaCompetencia: ""
+    }
+  ],
+  notaFinal: "",
+  comentarioFinal: "",
+  textoCorrigidoHtml: ""
+}`
         }
       ]
     };
-    console.log("Request Data: ", requestData); // Adicionado console.log para depuração
+
     try {
       const response = await axios.post(API_URL, requestData, {
         headers: {
@@ -139,7 +158,7 @@ export const useRedacaoStore = defineStore('redacaoStore', () => {
       });
 
       const content = response.data.choices[0].message.content;
-      console.log(content); // Adicionado console.log para depuração
+      console.log(content);
       const parsedResult = parseApiResponse(content);
       resultado.value = parsedResult;
     } catch (err) {
@@ -199,8 +218,9 @@ export const useRedacaoStore = defineStore('redacaoStore', () => {
   };
 
   const loadSavedResults = () => {
-    // Aqui você pode carregar os resultados salvos, por exemplo, do localStorage
+    // Aqui você pode implementar o carregamento dos resultados salvos, por exemplo, do localStorage ou de uma API.
   };
+
   return {
     tema,
     texto,
